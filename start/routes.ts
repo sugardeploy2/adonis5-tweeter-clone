@@ -19,7 +19,16 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-
+import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
+import Database from '@ioc:Adonis/Lucid/Database'
+ 
 Route.get('/', async () => {
   return { hello: 'world' }
+})
+Route.get('health', async ({ response }) => {
+  const report = await HealthCheck.getReport()
+  return report.healthy ? response.ok(report) : response.badRequest(report)
+})
+Route.get('test', async () => {
+  return Database.query().select('*').from('users')
 })
